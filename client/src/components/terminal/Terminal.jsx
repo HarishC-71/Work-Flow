@@ -11,7 +11,8 @@ export default function Terminal() {
     snapshots, 
     isWaitingForInput, 
     sendInput,
-    isStreaming 
+    isStreaming,
+    error
   } = useExecutionStore();
   
   const [inputValue, setInputValue] = useState('');
@@ -114,18 +115,25 @@ export default function Terminal() {
             
             {/* Inline Input */}
             {isWaitingForInput && isStreaming && (
-              <span className="inline-flex items-center">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyDown={handleSubmit}
-                  className="bg-transparent border-none outline-none text-accent-primary font-bold caret-accent-primary p-0 m-0 w-[20ch] max-w-full"
-                  autoFocus
-                />
-                <span className="w-2 h-4 bg-accent-primary animate-pulse ml-0.5" />
-              </span>
+              <div className="flex flex-col gap-1 mt-1 border-l-2 border-accent-primary/30 pl-2 py-1 bg-accent-primary/5 rounded-r">
+                <div className="flex items-center gap-2">
+                  <span className="text-accent-primary font-bold animate-pulse">❯</span>
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={handleSubmit}
+                    placeholder="Provide input (e.g. 3 5 7)..."
+                    className="flex-1 bg-transparent border-none outline-none text-accent-primary font-bold caret-accent-primary p-0 m-0 min-w-[100px]"
+                    autoFocus
+                  />
+                </div>
+                <div className="text-[10px] text-text-muted flex items-center gap-1 opacity-70">
+                  <Info size={10} />
+                  <span>Tip: You can provide multiple values separated by spaces or newlines at once.</span>
+                </div>
+              </div>
             )}
           </div>
         )}
@@ -139,9 +147,16 @@ export default function Terminal() {
         
         {/* Error */}
         {status === EXECUTION_STATUS.ERROR && (
-          <div className="text-error mt-2 font-bold flex items-center gap-2">
-            <XCircle size={14} />
-            Execution Error
+          <div className="text-error mt-2 font-bold flex flex-col gap-1 border-l-2 border-error/30 pl-2">
+            <div className="flex items-center gap-2">
+              <XCircle size={14} />
+              <span>Execution Error</span>
+            </div>
+            {error && (
+              <pre className="text-xs font-mono whitespace-pre-wrap mt-1 opacity-90 leading-relaxed font-normal">
+                {error.message || JSON.stringify(error)}
+              </pre>
+            )}
           </div>
         )}
       </div>

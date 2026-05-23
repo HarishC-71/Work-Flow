@@ -95,6 +95,9 @@ module.exports = (io) => {
               }
             }
           }
+          if (activeCleanup) {
+            activeCleanup();
+          }
           socket.emit('exit', { exitCode: code });
           activeProcess = null;
           activeCleanup = null;

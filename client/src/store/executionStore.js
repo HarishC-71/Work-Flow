@@ -43,18 +43,21 @@ const useExecutionStore = create((set, get) => ({
 
     socket.on('snapshot', (snapshot) => {
       const { snapshots, isStreaming } = get();
+      
+      // Update waiting state based on the current snapshot
+      if (snapshot.event === 'input_waiting') {
+        set({ isWaitingForInput: true });
+      } else {
+        // Any other event (line, output, stdin echo) means we are no longer blocking for input
+        set({ isWaitingForInput: false });
+      }
+
       const newSnapshots = [...snapshots, snapshot];
       set({ snapshots: newSnapshots });
       
       // Auto-step if streaming
       if (isStreaming) {
         set({ currentStep: newSnapshots.length - 1 });
-      }
-
-      if (snapshot.event === 'input_waiting') {
-        set({ isWaitingForInput: true });
-      } else if (snapshot.event === 'input_received' || snapshot.event === 'stdin') {
-        set({ isWaitingForInput: false });
       }
     });
 

@@ -66,9 +66,29 @@ class LocalExecutionService {
 
     const cleanup = () => {
       try {
-        if (!child.killed) child.kill('SIGKILL');
-        fs.rmSync(tmpDir, { recursive: true, force: true });
+        if (!child.killed) {
+          // On Windows, SIGKILL is not supported; child.kill() terminates the process.
+          child.kill('SIGKILL');
+        }
       } catch (_) {}
+      
+      // Delay deletion slightly on Windows to allow file handles to be released
+      setTimeout(() => {
+        try {
+          if (fs.existsSync(tmpDir)) {
+            fs.rmSync(tmpDir, { recursive: true, force: true });
+          }
+        } catch (err) {
+          // If it still fails, retry once more after another short delay
+          setTimeout(() => {
+            try {
+              if (fs.existsSync(tmpDir)) {
+                fs.rmSync(tmpDir, { recursive: true, force: true });
+              }
+            } catch (_) {}
+          }, 500);
+        }
+      }, 100);
     };
 
     return { child, tmpDir, cleanup };

@@ -61,6 +61,7 @@ export function getEventColor(event) {
     exception:      'bg-red-500/20 text-red-400',
     input_waiting:  'bg-yellow-500/20 text-yellow-400',
     input_received: 'bg-amber-500/20 text-amber-400',
+    stdin:          'bg-amber-500/20 text-amber-400',
     output:         'bg-cyan-500/20 text-cyan-400',
     program_end:    'bg-emerald-500/20 text-emerald-400',
     // Legacy Java event names
@@ -80,6 +81,7 @@ export function getEventIcon(event) {
     exception:      '✕',
     input_waiting:  '⌛',
     input_received: '⌨',
+    stdin:          '⌨',
     output:         '▷',
     program_end:    '✓',
     input:          '⌨',

@@ -69,7 +69,7 @@ export default function CodeEditor() {
     const editor = editorRef.current;
     if (!editor) return;
 
-    if (status === EXECUTION_STATUS.COMPLETED && snapshots.length > 0) {
+    if (snapshots.length > 0) {
       const snapshot = snapshots[currentStep];
       // Only highlight if line is a positive integer (skip line 0 = module call, null = program_end)
       if (snapshot && snapshot.line && snapshot.line > 0) {
@@ -135,7 +135,7 @@ export default function CodeEditor() {
       />
 
       {/* Line number indicator overlay */}
-      {status === EXECUTION_STATUS.COMPLETED && snapshots.length > 0 && (
+      {snapshots.length > 0 && (
         <motion.div
           key={currentStep}
           initial={{ opacity: 0, y: -10 }}
